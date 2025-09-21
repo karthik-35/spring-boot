@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Karthikeya Pullemla — Portfolio</title>
+  <meta name="description" content="Karthikeya Pullemla — UNT CS (Cybersecurity minor). Open to Software Development & DevOps internships." />
+  <style>
+    :root{
+      --bg:#060a18;--surface:#0c1226;--card:rgba(18,26,46,.65);--ink:#eaf0ff;--muted:#9fb0d3;--brand:#8b7cff;--accent:#22d3ee;--line:#1f2b49;
+      --radius:22px;--shadow:0 18px 60px rgba(0,0,0,.45)
+    }
+    :root.light{--bg:#f6f9ff;--surface:#ffffff;--card:rgba(255,255,255,.78);--ink:#0a1326;--muted:#4b5878;--brand:#5b4bff;--accent:#0ea5e9;--line:#dfe7fb;--shadow:0 12px 34px rgba(0,0,0,.10)}
+    *,*:before,*:after{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,"Noto Sans",sans-serif;color:var(--ink);background:var(--bg);line-height:1.65;overflow-x:hidden}
+    a{color:var(--brand);text-decoration:none}
+    a:hover{text-decoration:underline}
+    .wrap{max-width:1200px;margin:0 auto;padding:24px}
+    #bgCanvas{position:fixed;inset:0;z-index:-2}
+    .radial{position:fixed;inset:-10%;pointer-events:none;z-index:-1;background:
+      radial-gradient(800px 500px at 80% -10%, rgba(34,211,238,.18), transparent 60%),
+      radial-gradient(900px 600px at -10% -10%, rgba(139,124,255,.16), transparent 60%)}
+
+    /* Header — nav on the TOP RIGHT */
+    header{position:sticky;top:0;z-index:80;background:color-mix(in oklab, var(--bg) 78%, transparent);backdrop-filter:saturate(1.2) blur(12px);border-bottom:1px solid var(--line)}
+    .nav{display:flex;align-items:center;justify-content:space-between;gap:18px}
+    .brand{display:flex;align-items:center;gap:10px}
+    .dot{width:12px;height:12px;border-radius:999px;background:conic-gradient(from 0deg,var(--brand),var(--accent));box-shadow:0 0 18px var(--accent)}
+    .nav-right{display:flex;align-items:center;gap:18px}
+    .nav-links a{color:var(--muted);font-size:14px;padding:12px 8px;border-bottom:2px solid transparent}
+    .nav-links a.active{color:var(--ink);border-color:var(--brand)}
+    .icon-btn{width:40px;height:40px;border-radius:999px;display:grid;place-items:center;border:1px solid var(--line);background:color-mix(in oklab, var(--surface) 80%, transparent);cursor:pointer}
+
+    /* Buttons & cards */
+    .btn{display:inline-grid;place-items:center;padding:12px 18px;border-radius:14px;font-weight:800;color:#fff;cursor:pointer;box-shadow:var(--shadow);transition:transform .06s ease}
+    .btn:hover{transform:translateY(-1px)}
+    .btn.primary{background:linear-gradient(180deg,color-mix(in oklab, var(--brand) 100%, #fff 8%), color-mix(in oklab, var(--brand) 92%, #000 10%))}
+    .btn.accent{background:linear-gradient(180deg,color-mix(in oklab, var(--accent) 100%, #fff 6%), color-mix(in oklab, var(--accent) 92%, #000 8%))}
+    .btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+    .card{position:relative;border:1px solid var(--line);border-radius:var(--radius);padding:22px;background:var(--card);box-shadow:var(--shadow);backdrop-filter:blur(10px)}
+    .card::after{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;background:conic-gradient(from var(--angle,0deg), var(--accent), transparent, var(--brand), transparent, var(--accent));-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;opacity:.35;pointer-events:none}
+    @property --angle { syntax: '<angle>'; initial-value: 0deg; inherits: false; }
+    .card:hover{--angle: 360deg; transition: --angle 2.2s linear}
+    .chip{display:inline-block;padding:8px 10px;border-radius:999px;border:1px solid var(--line);background:color-mix(in oklab, var(--surface) 82%, transparent);font-size:12px}
+    .muted{color:var(--muted)}
+
+    main section{scroll-margin-top:92px}
+    h2.section{font-size:26px;letter-spacing:.3px;margin:34px 0 16px}
+    .grid{display:grid;gap:18px}
+    .grid-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .grid-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+
+    /* Hero */
+    .hero{display:grid;place-items:center;min-height:78vh;text-align:center;padding:72px 0;position:relative}
+    .hero h1{font-size:clamp(48px,9vw,96px);line-height:1.02;margin:0 0 12px}
+    .roles{font-size:clamp(18px,2.5vw,26px);color:var(--muted);font-weight:800}
+    .intro{max-width:980px;margin:10px auto 0;font-size:clamp(14px,2.2vw,18px);}
+
+    /* Skills (with small icons) */
+    .skill-card .skill-head{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+    .skill-icon{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:8px;background:color-mix(in oklab,var(--surface) 82%, transparent);border:1px solid var(--line);font-size:16px}
+
+    /* Journey, alternating center spine */
+    .journey{background:linear-gradient(180deg, transparent, rgba(139,124,255,.10) 40%, rgba(34,211,238,.10));border-radius:var(--radius)}
+    .timeline{position:relative}
+    .timeline:before{content:"";position:absolute;left:50%;top:0;bottom:0;transform:translateX(-50%);width:2px;background:linear-gradient(var(--brand),var(--accent));opacity:.6}
+    .trow{display:grid;grid-template-columns:1fr 1fr;align-items:center;margin:24px 0}
+    .trow .tcontent{position:relative}
+    .trow.left .tcontent{grid-column:1}
+    .trow.right .tcontent{grid-column:2}
+    .tmeta{position:absolute;top:-18px;display:flex;align-items:center;gap:10px}
+    .trow.left .tmeta{right:-18px}
+    .trow.right .tmeta{left:-18px}
+    .tl-node{display:inline-grid;place-items:center;width:44px;height:44px;border-radius:999px;background:radial-gradient(circle at 30% 30%, var(--accent), var(--brand));box-shadow:0 6px 16px rgba(0,0,0,.25);font-size:20px}
+    .year{color:color-mix(in oklab, var(--brand) 78%, white 10%);font-weight:800}
+
+    /* Projects spacing above Connect */
+    #connect{margin-top:44px}
+
+    /* Connect layout (like screenshot) */
+    .connect{text-align:center}
+    .cta-row{display:flex;gap:28px;justify-content:center;flex-wrap:wrap;margin:28px 0 18px}
+    .subcta-row{display:flex;gap:28px;justify-content:center;flex-wrap:wrap}
+
+    @media(max-width:960px){
+      .grid-2,.grid-3{grid-template-columns:1fr}
+      .timeline:before{left:12px;transform:none}
+      .trow{grid-template-columns:1fr}
+      .trow .tcontent{grid-column:1}
+      .trow .tmeta{left:-6px!important;right:auto}
+    }
+  </style>
+</head>
+<body>
+  <canvas id="bgCanvas" aria-hidden="true"></canvas>
+  <div class="radial" aria-hidden="true"></div>
+
+  <!-- Header: brand left, nav/top-right -->
+  <header>
+    <div class="wrap nav">
+      <div class="brand" aria-label="Home"><span class="dot" aria-hidden></span></div>
+      <div class="nav-right">
+        <nav aria-label="Primary" class="nav-links">
+          <a href="#home">Home</a>
+          <a href="#journey">Journey</a>
+          <a href="#experience">Experience</a>
+          <a href="#skills">Skills</a>
+          <a href="#projects">Projects</a>
+          <a href="#connect">Connect</a>
+        </nav>
+        <button id="themeBtn" class="icon-btn" aria-label="Toggle theme">🌓</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main" class="wrap">
+    <!-- HOME -->
+    <section id="home" class="hero">
+      <div>
+        <h1>Karthikeya Pullemla</h1>
+        <div class="roles">Open to Software Development & DevOps roles</div>
+        <p class="muted intro">Strong foundation in software development, cloud platforms, and cybersecurity. Skilled in programming, teamwork, and problem-solving. Seeking internships to apply expertise, contribute to innovative projects, and gain valuable hands-on industry experience.</p>
+        <div style="margin-top:18px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+          <a class="btn primary" href="#projects">View Projects</a>
+          <a class="btn ghost" href="#journey">My Journey</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- JOURNEY (your data) -->
+    <section id="journey" class="journey">
+      <h2 class="section">My Journey</h2>
+      <div class="timeline">
+        <div class="trow left">
+          <div class="tcontent card">
+            <div class="tmeta"><span class="tl-node">🎓</span><span class="year">2023</span></div>
+            <strong>CS Foundations @ UNT</strong>
+            <div class="muted">Began B.S. in Computer Science; focused on Data Structures, Algorithms, and Software Engineering.</div>
+          </div>
+        </div>
+        <div class="trow right">
+          <div class="tcontent card">
+            <div class="tmeta"><span class="tl-node">🛠️</span><span class="year">2024</span></div>
+            <strong>IT Support</strong>
+            <div class="muted">University Library & Computer Labs — solved software/hardware/networking issues; mentored peers on Git/GitHub.</div>
+          </div>
+        </div>
+        <div class="trow left">
+          <div class="tcontent card">
+            <div class="tmeta"><span class="tl-node">📜</span><span class="year">2024–2025</span></div>
+            <strong>Certifications & Projects</strong>
+            <div class="muted">Google IT Automation with Python, Google Cybersecurity, IBM DevOps; built C++ Student Grade Management System.</div>
+          </div>
+        </div>
+        <div class="trow right">
+          <div class="tcontent card">
+            <div class="tmeta"><span class="tl-node">🎯</span><span class="year">2027</span></div>
+            <strong>Graduation</strong>
+            <div class="muted">B.S. Computer Science (Minor: Cybersecurity), GPA 4.0. Seeking SWE & DevOps internships along the way.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- EXPERIENCE -->
+    <section id="experience">
+      <h2 class="section">Professional Experience</h2>
+      <div class="grid">
+        <article class="card">
+          <h3>IT Support Assistant — Computer Labs <span class="muted">(May 2024 – Present · Denton, TX)</span></h3>
+          <ul>
+            <li>Resolved software, hardware, and networking issues to maintain smooth lab operations.</li>
+            <li>Guided students on tooling and version control (Git/GitHub), improving productivity.</li>
+          </ul>
+          <div class="muted">Troubleshooting · Networking · Git/GitHub</div>
+        </article>
+        <article class="card">
+          <h3>Technical Support Assistant — University Library <span class="muted">(Dec 2023 – May 2024 · Denton, TX)</span></h3>
+          <ul>
+            <li>Provided technical support for equipment and software to ensure reliability.</li>
+            <li>Assisted with testing and evaluation of software upgrades and new technologies.</li>
+          </ul>
+          <div class="muted">Customer Support · Software Testing</div>
+        </article>
+      </div>
+    </section>
+
+    <!-- SKILLS with small icons -->
+    <section id="skills">
+      <h2 class="section">Core Expertise</h2>
+      <div class="grid grid-3">
+        <div class="card skill-card"><div class="skill-head"><span class="skill-icon">💻</span><strong>Software Development</strong></div><div class="muted">Python, Java, C/C++, JavaScript/TypeScript</div></div>
+        <div class="card skill-card"><div class="skill-head"><span class="skill-icon">⚙️</span><strong>DevOps</strong></div><div class="muted">Docker, Kubernetes, GitHub Actions, Jenkins, Terraform, Ansible</div></div>
+        <div class="card skill-card"><div class="skill-head"><span class="skill-icon">☁️</span><strong>Cloud</strong></div><div class="muted">AWS · VMware</div></div>
+        <div class="card skill-card"><div class="skill-head"><span class="skill-icon">🌐</span><strong>Web</strong></div><div class="muted">React, Node.js, REST APIs, HTML/CSS</div></div>
+        <div class="card skill-card"><div class="skill-head"><span class="skill-icon">📊</span><strong>Data & ML</strong></div><div class="muted">Pandas, NumPy, scikit-learn, PyTorch, Matplotlib</div></div>
+        <div class="card skill-card"><div class="skill-head"><span class="skill-icon">🔐</span><strong>Security</strong></div><div class="muted">Google Foundations of Cybersecurity; secure coding practices</div></div>
+      </div>
+    </section>
+
+    <!-- PROJECTS -->
+    <section id="projects">
+      <h2 class="section">Featured Projects</h2>
+      <div class="grid grid-3">
+        <article class="card">
+          <h3>Student Grade Management System</h3>
+          <p class="muted">C++ CLI managing student records with robust file I/O and modular architecture.</p>
+          <ul>
+            <li>Add/remove/display/search records; export results to disk.</li>
+            <li>Structured with separate main, function, and header files.</li>
+            <li>Dynamic memory and data structures for performance.</li>
+          </ul>
+          <div class="muted">C++ · File I/O · DSA</div>
+        </article>
+        <article class="card">
+          <h3>City Simulation Developer</h3>
+          <p class="muted">Supported peers’ software/hardware/networking to keep lab simulations running smoothly.</p>
+          <ul>
+            <li>Troubleshot IDE and Git/GitHub issues to unblock development.</li>
+            <li>Improved reliability of lab operations.</li>
+          </ul>
+          <div class="muted">Git · Networking · Support</div>
+        </article>
+        <article class="card">
+          <h3>DevOps Practice Lab</h3>
+          <p class="muted">Sample CI/CD pipeline on GitHub Actions deploying a Flask app to Docker.</p>
+          <ul>
+            <li>Build, test, and push Docker image on pull request.</li>
+            <li>Semantic version tagging; environment secrets management.</li>
+          </ul>
+          <div class="muted">GitHub Actions · Docker · Flask</div>
+        </article>
+      </div>
+    </section>
+
+    <!-- CONNECT (exact layout like screenshot; GitHub instead of Google Form) -->
+    <section id="connect" class="connect card">
+      <h2 class="section" style="margin-top:0;font-size:36px">Let's Connect</h2>
+      <p class="muted" style="max-width:760px;margin:0 auto 18px">Interested in hiring me? Or in collaborating or learning more about my work? I'm always open to discussing new projects and opportunities.</p>
+
+      <div class="cta-row">
+        <!-- Replace mailto with Calendly if you have one -->
+        <a class="btn accent" id="bookLink"
+           href="mailto:karthikeyapullemla@gmail.com?subject=Book%20a%20Meeting&body=Hi%20Karthikeya,%0D%0A%0D%0AI'd%20like%20to%20schedule%20a%20meeting...">
+          📅 Book a Meeting
+        </a>
+      </div>
+
+      <div class="subcta-row">
+        <a class="btn ghost" href="https://www.linkedin.com/in/karthikeya-pullemla-9199532b2/" target="_blank" rel="noopener">Connect on LinkedIn</a>
+        <a class="btn ghost" href="resume.pdf" target="_blank" rel="noopener">View Resume/CV</a>
+        <a class="btn ghost" href="https://github.com/karthik-35" target="_blank" rel="noopener">GitHub</a>
+      </div>
+
+      <p class="muted" style="margin-top:18px;font-size:13px">Your privacy is important to me. Email or phone works great; happy to share more details on request.</p>
+    </section>
+
+    <footer style="text-align:center;color:var(--muted);font-size:13px;margin-top:24px">© <span id="year"></span> · Karthikeya Pullemla · Built with advanced vanilla HTML/CSS/JS</footer>
+  </main>
+
+  <script>
+    // Theme toggle
+    const root=document.documentElement, KEY='kp_theme';
+    const setTheme=m=>{root.classList.toggle('light',m==='light');root.classList.toggle('dark',m==='dark');localStorage.setItem(KEY,m)};
+    const saved=localStorage.getItem(KEY); if(saved) setTheme(saved);
+    document.getElementById('themeBtn').addEventListener('click',()=>{setTheme(root.classList.contains('light')?'dark':'light')});
+
+    // Scroll spy
+    const links=[...document.querySelectorAll('.nav-links a')];
+    const map=new Map(links.map(a=>[a.getAttribute('href'),a]));
+    const spy=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){links.forEach(a=>a.classList.remove('active'));const a=map.get('#'+e.target.id);if(a) a.classList.add('active')}})},{rootMargin:'-60% 0px -30% 0px'});
+    document.querySelectorAll('main section').forEach(s=>spy.observe(s));
+
+    // Background canvas particles
+    const c=document.getElementById('bgCanvas'), ctx=c.getContext('2d'), DPR=Math.min(2,devicePixelRatio||1);
+    function resize(){ c.width=innerWidth*DPR; c.height=innerHeight*DPR; ctx.setTransform(DPR,0,0,DPR,0,0) }
+    resize(); addEventListener('resize', resize);
+    const P=80, parts=Array.from({length:P},()=>({x:Math.random()*innerWidth,y:Math.random()*innerHeight,vx:(Math.random()*2-1)*.6,vy:(Math.random()*2-1)*.6}));
+    (function step(){
+      ctx.clearRect(0,0,innerWidth,innerHeight);
+      const g=ctx.createLinearGradient(0,0,innerWidth,innerHeight); g.addColorStop(0,'rgba(124,156,255,.10)'); g.addColorStop(1,'rgba(34,211,238,.08)'); ctx.fillStyle=g; ctx.fillRect(0,0,innerWidth,innerHeight);
+      parts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>innerWidth)p.vx*=-1;if(p.y<0||p.y>innerHeight)p.vy*=-1;});
+      for(let i=0;i<P;i++) for(let j=i+1;j<P;j++){const a=parts[i],b=parts[j];const d=Math.hypot(a.x-b.x,a.y-b.y);if(d<150){ctx.globalAlpha=(150-d)/150*.45;ctx.strokeStyle='rgba(136,148,255,.8)';ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();}}
+      ctx.globalAlpha=1; ctx.fillStyle='rgba(34,211,238,.9)'; parts.forEach(p=>{ctx.beginPath();ctx.arc(p.x,p.y,1.8,0,Math.PI*2);ctx.fill();});
+      requestAnimationFrame(step);
+    })();
+
+    // Footer year
+    document.getElementById('year').textContent=new Date().getFullYear();
+
+    // To use Calendly for “Book a Meeting”, just replace the href:
+    // document.getElementById('bookLink').href = 'https://calendly.com/YOUR_HANDLE/intro';
+  </script>
+</body>
+</html>
